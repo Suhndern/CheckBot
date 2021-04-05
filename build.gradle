@@ -1,0 +1,48 @@
+plugins {
+    id 'java'
+}
+
+group 'com.github.suhndern'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class':'Main'
+        )
+    }
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it)}
+    }
+    from "bot.policy"
+}
+
+ext {
+    lombokVersion = "1.18.16"
+    slf4jVersion = "1.7.28"
+}
+
+dependencies {
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: lombokVersion
+    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: lombokVersion
+    implementation group: 'org.projectlombok', name: 'lombok', version: lombokVersion
+
+    compile ('net.dv8tion:JDA:4.2.0_168') {
+        exclude module: 'opus-java'
+    }
+
+    compile group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion
+    compile group: 'org.slf4j', name: 'slf4j-simple', version: slf4jVersion
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+}
+
+test {
+    useJUnitPlatform()
+}
